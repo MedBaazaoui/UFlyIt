@@ -181,6 +181,8 @@
     }
     @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
   </style>
+  <script data-goatcounter="https://med1235.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 
@@ -669,6 +671,14 @@
       this.textContent = '✓ Sent';
       this.style.background = '#1A7A4A';
       this.disabled = true;
+      // Track configurator engagement — strong signal vs simple pageview
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({
+          path: 'configurator-submit-clicked',
+          title: 'Configurator Demo Submitted',
+          event: true
+        });
+      }
     });
 
     // ── COLOR SWATCHES ──
@@ -708,6 +718,7 @@
     });
 
     const oosMsg = document.getElementById('oos-msg');
+    let colorInteractionTracked = false;
 
     document.querySelectorAll('.swatch').forEach(sw => {
       sw.addEventListener('click', function() {
@@ -724,6 +735,15 @@
         } else {
           oosMsg.classList.remove('visible');
           applyAcColor(this.dataset.color);
+        }
+        // Track first color interaction only — signals real engagement, not noise
+        if (!colorInteractionTracked && window.goatcounter && window.goatcounter.count) {
+          colorInteractionTracked = true;
+          window.goatcounter.count({
+            path: 'aircraft-color-interacted',
+            title: 'Tried Aircraft Color Picker',
+            event: true
+          });
         }
       });
     });
